@@ -1,4 +1,9 @@
 ﻿# Offres_d-emploi
+ ## TECHs:
+ * SYMFONY5/PHP7
+ * DOCKER
+ * POSTGRES
+ * BOOTSTRAP
  ## STEPS: 
 * composer install
 * npm install
