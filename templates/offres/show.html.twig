@@ -1,0 +1,40 @@
+{% extends 'layouts/base.html.twig' %}
+
+{% block title offre.titre %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-6 mx-auto">
+            <article class="pin bg-white rounded shadow">
+
+                <div class="p-3">
+                    <h1 class="h5 text-secondary">{{ offre.titre }} : {{ offre.metier}}</h1>
+
+                    <p class="text-muted">
+                        <small>
+                            Submitted 
+                            <time datetime="{{ offre.createdAt|date('Y-m-d H:i:s') }}">{{ offre.createdAt|ago }}</time>
+                            by {{ offre.etablissement }}
+                        </small>
+                    </p>
+
+                    <p class="pt-3 text-break">
+                        {{ offre.description }}
+                    </p>
+                    <p class="pt-3 text-break">
+                        {{ offre.url }}
+                    </p>
+                    <div class="pt-3">
+                        <a href="{{ path('app_offres_edit', {'id': offre.id}) }}" class="btn btn-light">Edit</a>
+                        <a href="#" onclick="event.preventDefault(); confirm('Are you sure?') && document.getElementById('js-pin-delete-form').submit();" class="btn btn-light">Delete</a>
+
+                        <form id="js-pin-delete-form" action="{{ path('app_offres_delete', {id: offre.id}) }}" method="post" style="display: none;">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token('offre_deletion_'~offre.id) }}">
+                            <input type="hidden" name="_method" value="DELETE">
+                        </form> 
+                    </div>
+                </div>
+            </article>
+        </div>
+    </div>
+{% endblock %}
