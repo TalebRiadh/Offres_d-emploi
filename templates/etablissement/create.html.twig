@@ -1,19 +1,26 @@
+
 <!DOCTYPE html>
 <html lang="{{ app.request.locale }}">
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Offres d'emploi{% endblock %}</title>
+        <title>{% block title "Create d'un etablissement" %}</title>
         {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
         {% endblock %}
     </head>
     <body>
         {{ include('layouts/partials/_flash_messages.html.twig') }}
-        {{ include('layouts/partials/_nav.html.twig') }}
-        
         <main role="main" class="container">
-            {% block body %}{% endblock %}
-        </main>
+            {% block body %}
+            <div class="row">
+                <div class="col-md-8 mt-5 mx-auto">
+                    <h1>Enregistrer le nom de l'établissement</h1>
+        
+                    {{ include('etablissement/_form.html.twig') }}
+                </div>
+            </div>
+        {% endblock %}
+            </main>
 
         {% block javascripts %}
             {{ encore_entry_script_tags('app') }}
