@@ -23,8 +23,8 @@
   | *GET* | ```/offres``` | _liste des offres_|
   | *POST* | ```/offres/create``` | _creation d'une offre_|
   | *GET* | ```/offres/{id}``` | _details sur une offre_|
-  | *POST* | ```/offres/{id}/edit``` | _modifier une offre_|
-  | *POST* | ```/offres/{id}``` | _supprimer une offre_|
+  | *GET/PUT* | ```/offres/{id}/edit``` | _modifier une offre_|
+  | *DELETE* | ```/offres/{id}``` | _supprimer une offre_|
   
  ## SCREENS:
 ![Capture](https://user-images.githubusercontent.com/26094313/215843709-17b91369-8398-4327-b90c-bb960a4389ba.PNG)
