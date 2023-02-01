@@ -17,12 +17,22 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class OffresController extends AbstractController
 {
+    private $etablissementRepository;
+    private $em;
+    private $etablissement;
+
+    public function __construct(EtablissementRepository $etablissementRepository, EntityManagerInterface $em){
+        $this->etablissementRepository = $etablissementRepository;
+        $this->em  = $em;
+        $this->etablissement = $etablissementRepository->findOneBy([]);
+    }
+
     /**
      * @Route("/", name="app_etablissement", methods={"GET","POST"})
      */
-    public function etablissement(Request $request, EntityManagerInterface $em,EtablissementRepository $etablissementRepository): Response
+    public function etablissement(Request $request): Response
     {
-        if($etablissementRepository->findOneBy([]))
+        if($this->etablissement)
         {
             return $this->redirectToRoute('app_home');
         }
@@ -31,8 +41,8 @@ class OffresController extends AbstractController
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid())
         {
-            $em->persist($etablissement);
-            $em->flush();
+            $this->em->persist($etablissement);
+            $this->em->flush();
             $this->addFlash('sucess', 'Etablissement successfully created!');
             return $this->redirectToRoute('app_home');
         }
@@ -44,27 +54,35 @@ class OffresController extends AbstractController
      * @Route("/offres", name="app_home", methods={"GET"})
      * */    
     public function index(OffreRepository $offreRepository): Response
-    {
-        $offres = $offreRepository->findBy([], ['createdAt' => 'DESC']);
-        return $this->render('offres/index.html.twig', compact('offres'));
+    {        
+        if($this->etablissement)
+        {
+            $offres = $offreRepository->findBy([], ['createdAt' => 'DESC']);
+            return $this->render('offres/index.html.twig', compact('offres'));
+        }
+        return $this->redirectToRoute('app_etablissement');
+
     }
 
     /**
      * @Route("/offres/create", name="app_offres_create", methods={"GET", "POST"})
      */
-    public function create(Request $request, EntityManagerInterface $em, EtablissementRepository $er): Response
+    public function create(Request $request): Response
     {
+        if(!$this->etablissement)
+        {
+            return $this->redirectToRoute('app_etablissement');
+        }
         $offre = new Offre;
         $form = $this->createForm(OffreType::class, $offre);
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid())
         {   
-            $etablissement = $er->findOneBy([]);
-            $offre->setEtablissement($etablissement);
+            $offre->setEtablissement($this->etablissement);
             $offre->setNumero();
-            $em->persist($offre);
-            $em->flush();
+            $this->em->persist($offre);
+            $this->em->flush();
 
             $this->addFlash('sucess', 'Offre successfully created!');
 
@@ -81,6 +99,10 @@ class OffresController extends AbstractController
      */
     public function show(Offre $offre): Response
     {
+        if(!$this->etablissement)
+        {
+            return $this->redirectToRoute('app_etablissement');
+        }
         return $this->render('offres/show.html.twig', compact('offre'));
     }
 
@@ -88,8 +110,12 @@ class OffresController extends AbstractController
     /**
      * @Route("/offres/{id<[0-9]+>}/edit", name="app_offres_edit", methods={"GET", "POST"})
      */
-    public function edit(Request $request, Offre $offre, EntityManagerInterface $em): Response
+    public function edit(Request $request, Offre $offre): Response
     {
+        if(!$this->etablissement)
+        {
+            return $this->redirectToRoute('app_etablissement');
+        }
         $form = $this->createForm(OffreType::class, $offre, [
             'method' => 'POST'
         ]);
@@ -97,7 +123,7 @@ class OffresController extends AbstractController
 
         if($form->isSubmitted() && $form->isValid())
         {
-            $em->flush();
+            $this->em->flush();
             $this->addFlash('success', 'Offre successfully updated!');
 
             return $this->redirectToRoute('app_home');
@@ -112,12 +138,16 @@ class OffresController extends AbstractController
     /**
      * @Route("/offres/{id<[0-9]+>}", name="app_offres_delete", methods={"POST"})
      */
-    public function delete(Request $request, Offre $offre, EntityManagerInterface $em)
+    public function delete(Request $request, Offre $offre)
     {
+        if(!$this->etablissement)
+        {
+            return $this->redirectToRoute('app_etablissement');
+        }
         if($this->isCsrfTokenValid('offre_deletion_' . $offre->getId(), $request->request->get('csrf_token')))
         {
-            $em->remove($offre);
-            $em->flush();
+            $this->em->remove($offre);
+            $this->em->flush();
 
             $this->addFlash('info', 'Offre successfully deleted!');
         }
