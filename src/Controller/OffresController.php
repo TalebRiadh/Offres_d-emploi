@@ -108,7 +108,7 @@ class OffresController extends AbstractController
 
 
     /**
-     * @Route("/offres/{id<[0-9]+>}/edit", name="app_offres_edit", methods={"GET", "POST"})
+     * @Route("/offres/{id<[0-9]+>}/edit", name="app_offres_edit", methods={"GET", "PUT"})
      */
     public function edit(Request $request, Offre $offre): Response
     {
@@ -136,7 +136,7 @@ class OffresController extends AbstractController
 
 
     /**
-     * @Route("/offres/{id<[0-9]+>}", name="app_offres_delete", methods={"POST"})
+     * @Route("/offres/{id<[0-9]+>}", name="app_offres_delete", methods={"DELETE"})
      */
     public function delete(Request $request, Offre $offre)
     {
